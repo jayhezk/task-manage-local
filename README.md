@@ -2,18 +2,35 @@
 
 这是一个纯前端本地任务管理工具，包含日常任务、项目管理、目标、时间提醒、日期复盘和甘特图能力。
 
-## 截图入口
+## 截图预览
 
 > 截图中的任务和项目是演示数据，只用于说明界面效果；代码仓库不包含任何个人任务数据。
 >
-> 如果 README 内嵌图片在当前网络下无法加载，请点击下面的截图入口打开 GitHub 图片文件页查看。
+> 说明：此前使用仓库相对图片路径时，GitHub 页面会把图片解析到额外的静态资源地址，部分网络下可能出现破图。现在改为明确的 GitHub raw 图片直链，并保留原图入口。
 
-| 截图 | 说明 |
-| --- | --- |
-| [打开日常任务看板截图](docs/screenshots/preview/01-daily-board.jpg) | 日常任务、目标、时间提醒和日常甘特图 |
-| [打开今日可进行任务浮窗截图](docs/screenshots/preview/02-today-tasks-popover.jpg) | 今日可进行任务数量、浮窗列表和按剩余时间排序 |
-| [打开项目管理看板截图](docs/screenshots/preview/03-project-board.jpg) | 项目卡片、项目详情、项目任务和项目甘特图 |
-| [打开日期复盘查询截图](docs/screenshots/preview/04-calendar-review.jpg) | 右上角日期查询入口和完成记录复盘 |
+### 日常任务看板
+
+<img src="https://raw.githubusercontent.com/jayhezk/task-manage-local/main/docs/screenshots/preview/01-daily-board.jpg" alt="日常任务看板" width="720">
+
+[查看原图](docs/screenshots/01-daily-board.png)
+
+### 今日可进行任务浮窗
+
+<img src="https://raw.githubusercontent.com/jayhezk/task-manage-local/main/docs/screenshots/preview/02-today-tasks-popover.jpg" alt="今日可进行任务浮窗" width="720">
+
+[查看原图](docs/screenshots/02-today-tasks-popover.png)
+
+### 项目管理看板
+
+<img src="https://raw.githubusercontent.com/jayhezk/task-manage-local/main/docs/screenshots/preview/03-project-board.jpg" alt="项目管理看板" width="720">
+
+[查看原图](docs/screenshots/03-project-board.png)
+
+### 日期复盘查询
+
+<img src="https://raw.githubusercontent.com/jayhezk/task-manage-local/main/docs/screenshots/preview/04-calendar-review.jpg" alt="日期复盘查询" width="720">
+
+[查看原图](docs/screenshots/04-calendar-review.png)
 
 高清原图也保留在 `docs/screenshots/` 目录中。
 
