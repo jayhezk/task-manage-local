@@ -8,19 +8,27 @@
 
 ### 日常任务看板
 
-![日常任务看板](docs/screenshots/01-daily-board.png)
+![日常任务看板](docs/screenshots/preview/01-daily-board.jpg)
+
+[查看原图](docs/screenshots/01-daily-board.png)
 
 ### 今日可进行任务浮窗
 
-![今日可进行任务浮窗](docs/screenshots/02-today-tasks-popover.png)
+![今日可进行任务浮窗](docs/screenshots/preview/02-today-tasks-popover.jpg)
+
+[查看原图](docs/screenshots/02-today-tasks-popover.png)
 
 ### 项目管理看板
 
-![项目管理看板](docs/screenshots/03-project-board.png)
+![项目管理看板](docs/screenshots/preview/03-project-board.jpg)
+
+[查看原图](docs/screenshots/03-project-board.png)
 
 ### 日期复盘查询
 
-![日期复盘查询](docs/screenshots/04-calendar-review.png)
+![日期复盘查询](docs/screenshots/preview/04-calendar-review.jpg)
+
+[查看原图](docs/screenshots/04-calendar-review.png)
 
 ## 使用方式
 
