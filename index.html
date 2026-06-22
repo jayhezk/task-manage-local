@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>我的任务看板</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="dashboard-card" aria-labelledby="app-title">
+        <header class="dashboard-header">
+          <div class="dashboard-title-block">
+            <p class="eyebrow">Personal Task Board</p>
+            <div class="title-row">
+              <div class="board-switcher">
+                <button
+                  id="board-switch-button"
+                  class="title-icon board-switch-button"
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded="false"
+                  aria-controls="board-switch-menu"
+                  aria-label="切换日常任务或项目管理"
+                >
+                  <svg viewBox="0 0 64 64" role="img" focusable="false">
+                    <defs>
+                      <linearGradient id="board-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#7dc0ff" />
+                        <stop offset="100%" stop-color="#a884ff" />
+                      </linearGradient>
+                    </defs>
+                    <rect x="10" y="8" width="44" height="48" rx="12" fill="url(#board-gradient)" />
+                    <path
+                      d="M22 22h20M22 32h20M22 42h12"
+                      stroke="#ffffff"
+                      stroke-width="4"
+                      stroke-linecap="round"
+                    />
+                    <circle cx="48" cy="46" r="8" fill="#fff5a8" />
+                    <path
+                      d="M45 46l2 2 4-5"
+                      fill="none"
+                      stroke="#6d57c9"
+                      stroke-width="2.5"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    />
+                  </svg>
+                </button>
+                <div id="board-switch-menu" class="board-switch-menu hidden" role="menu" aria-label="选择看板板块">
+                  <button class="board-switch-option active" type="button" role="menuitem" data-board-mode="daily">
+                    <span>日常任务</span>
+                    <strong>待办、复盘、日常甘特图</strong>
+                  </button>
+                  <button class="board-switch-option" type="button" role="menuitem" data-board-mode="project">
+                    <span>项目管理</span>
+                    <strong>项目卡片、项目任务、项目甘特图</strong>
+                  </button>
+                </div>
+              </div>
+              <div>
+                <h1 id="app-title">我的任务看板</h1>
+                <p class="hero-copy">目标、时间、复盘和待办放在同一页，日常推进会更顺手。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="header-calendar-widget">
+            <button
+              id="calendar-toggle"
+              class="calendar-toggle calendar-square-button"
+              type="button"
+              aria-expanded="false"
+              aria-controls="calendar-body"
+              aria-label="日期查询"
+            >
+              <span id="calendar-title" class="sr-only">日期查询</span>
+              <span class="calendar-square-main" aria-hidden="true">日</span>
+              <span id="calendar-toggle-icon" class="toggle-icon collapsed" aria-hidden="true">▾</span>
+            </button>
+
+            <div id="calendar-body" class="calendar-body calendar-popover hidden">
+              <div class="calendar-header">
+                <button id="calendar-prev-button" class="icon-button" type="button" aria-label="查看上一个月">
+                  ‹
+                </button>
+                <h3 id="calendar-month-label" class="calendar-month-label">--</h3>
+                <button id="calendar-next-button" class="icon-button" type="button" aria-label="查看下一个月">
+                  ›
+                </button>
+              </div>
+
+              <div class="calendar-weekdays" aria-hidden="true">
+                <span>一</span>
+                <span>二</span>
+                <span>三</span>
+                <span>四</span>
+                <span>五</span>
+                <span>六</span>
+                <span>日</span>
+              </div>
+
+              <div id="calendar-grid" class="calendar-grid" role="grid" aria-label="按月日期查询"></div>
+
+              <div class="history-panel">
+                <div class="history-header">
+                  <h3 id="history-date-label">--</h3>
+                  <p>当日完成的任务</p>
+                </div>
+                <div id="history-empty-state" class="soft-empty">
+                  <p>这一天还没有完成记录。</p>
+                </div>
+                <ul id="history-list" class="history-list" aria-label="日期完成记录"></ul>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <section class="top-grid">
+          <section class="panel goal-panel" aria-labelledby="goal-title">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-kicker">Goal Tracker</p>
+                <h2 id="goal-title">目标模块</h2>
+              </div>
+              <button id="open-goal-modal-button" class="primary-button compact-button" type="button">
+                添加目标
+              </button>
+            </div>
+
+            <div id="goal-empty-state" class="soft-empty">
+              <p>先定一个目标，后面的任务会更有方向。</p>
+            </div>
+            <ul id="goal-list" class="goal-list" aria-label="目标列表"></ul>
+          </section>
+
+          <section class="panel time-panel" aria-labelledby="time-title">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-kicker">Time Snapshot</p>
+                <h2 id="time-title">时间模块</h2>
+              </div>
+            </div>
+
+            <div class="time-overview">
+              <div class="time-hero">
+                <p id="current-date-label" class="time-date">--</p>
+                <p id="current-time-label" class="time-clock">--:--:--</p>
+              </div>
+
+              <section class="today-task-prompt" aria-labelledby="today-task-title">
+                <button
+                  id="today-task-toggle"
+                  class="today-task-toggle"
+                  type="button"
+                  aria-expanded="false"
+                  aria-controls="today-task-list-panel"
+                >
+                  <span id="today-task-title">今日可进行</span>
+                  <strong><span id="today-task-count">0</span> 项任务</strong>
+                  <small>按剩余时间从短到长</small>
+                  <span id="today-task-toggle-icon" class="today-task-toggle-icon collapsed" aria-hidden="true">▾</span>
+                </button>
+
+                <div id="today-task-list-panel" class="today-task-list-panel hidden">
+                  <div id="today-task-empty-state" class="today-task-empty-state">
+                    暂无今天可进行的任务
+                  </div>
+                  <ul id="today-task-list" class="today-task-list" aria-label="今天可进行任务列表"></ul>
+                </div>
+              </section>
+            </div>
+
+            <div class="time-grid">
+              <article class="time-pill">
+                <span>当日剩余时间</span>
+                <strong id="day-remaining-label">--</strong>
+              </article>
+              <article class="time-pill">
+                <span>本周剩余天数</span>
+                <strong id="week-remaining-label">--</strong>
+              </article>
+              <article class="time-pill">
+                <span>本月剩余天数</span>
+                <strong id="month-remaining-label">--</strong>
+              </article>
+              <article class="time-pill">
+                <span>本年剩余天数</span>
+                <strong id="year-remaining-label">--</strong>
+              </article>
+            </div>
+          </section>
+        </section>
+
+        <section class="panel gantt-panel" aria-labelledby="gantt-title">
+          <div class="panel-heading">
+            <div>
+              <p class="panel-kicker">Daily Gantt</p>
+              <h2 id="gantt-title">日常任务甘特图</h2>
+            </div>
+            <div class="gantt-heading-actions">
+              <div class="gantt-scale-toggle" role="group" aria-label="切换甘特图时间维度">
+                <button
+                  class="gantt-scale-button active"
+                  type="button"
+                  data-gantt-scale="day"
+                  aria-pressed="true"
+                >
+                  天
+                </button>
+                <button class="gantt-scale-button" type="button" data-gantt-scale="week" aria-pressed="false">
+                  周
+                </button>
+                <button class="gantt-scale-button" type="button" data-gantt-scale="month" aria-pressed="false">
+                  月
+                </button>
+              </div>
+              <span id="gantt-window-label" class="gantt-window-label">--</span>
+            </div>
+          </div>
+
+          <div id="gantt-empty-state" class="soft-empty">
+            <p>暂无任务</p>
+          </div>
+          <div id="gantt-chart" class="gantt-chart" aria-label="日常任务甘特图"></div>
+        </section>
+
+        <section class="workbench-grid" aria-label="任务与项目工作区">
+          <section class="panel tasks-panel" aria-labelledby="task-title">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-kicker">Daily Tasks</p>
+                <h2 id="task-title">日常任务</h2>
+              </div>
+              <div class="panel-actions">
+                <button id="open-task-modal-button" class="primary-button compact-button" type="button">
+                  添加任务
+                </button>
+                <button id="clear-completed-button" class="ghost-button" type="button">清空已完成</button>
+              </div>
+            </div>
+
+            <div class="status-bar">
+              <div class="status-pill">
+                <span class="status-label">总数</span>
+                <strong id="total-count">0</strong>
+              </div>
+              <div class="status-pill">
+                <span class="status-label">未完成</span>
+                <strong id="pending-count">0</strong>
+              </div>
+              <div class="status-pill">
+                <span class="status-label">已完成</span>
+                <strong id="completed-count">0</strong>
+              </div>
+            </div>
+
+            <div id="task-empty-state" class="soft-empty task-empty-state">
+              <p>还没有任务，点击“添加任务”开始安排今天。</p>
+            </div>
+            <ul id="task-list" class="task-list" aria-label="详细日常任务列表"></ul>
+          </section>
+
+          <section class="panel projects-panel hidden" aria-labelledby="project-title">
+            <div class="panel-heading">
+              <div>
+                <p class="panel-kicker">Project Portfolio</p>
+                <h2 id="project-title">项目管理</h2>
+              </div>
+              <button id="open-project-modal-button" class="primary-button compact-button" type="button">
+                添加项目
+              </button>
+            </div>
+
+            <div class="project-status-bar">
+              <div class="status-pill">
+                <span class="status-label">项目总数</span>
+                <strong id="project-total-count">0</strong>
+              </div>
+              <div class="status-pill">
+                <span class="status-label">推进中</span>
+                <strong id="project-active-count">0</strong>
+              </div>
+              <div class="status-pill">
+                <span class="status-label">需关注</span>
+                <strong id="project-risk-count">0</strong>
+              </div>
+            </div>
+
+            <div id="project-empty-state" class="soft-empty">
+              <p>还没有项目，添加一个项目后会生成项目卡片。</p>
+            </div>
+            <div id="project-list" class="project-list" aria-label="项目列表"></div>
+
+            <div id="project-detail-empty-state" class="soft-empty project-detail-empty">
+              <p>点击项目卡片，查看项目任务和甘特图。</p>
+            </div>
+
+            <section id="project-detail" class="project-detail hidden" aria-labelledby="project-detail-title">
+              <div class="project-detail-header">
+                <div>
+                  <p class="panel-kicker">Project Detail</p>
+                  <div class="project-detail-title-row">
+                    <h3 id="project-detail-title">--</h3>
+                    <span id="project-detail-status" class="project-health-tag">正常</span>
+                  </div>
+                  <p id="project-detail-objective" class="project-detail-objective">--</p>
+                </div>
+                <div class="panel-actions">
+                  <button id="open-project-task-button" class="primary-button compact-button" type="button">
+                    添加项目任务
+                  </button>
+                  <button id="collapse-project-detail-button" class="ghost-button" type="button">收起详情</button>
+                </div>
+              </div>
+
+              <div class="project-metrics">
+                <article class="project-metric">
+                  <span>负责人</span>
+                  <strong id="project-detail-owner">--</strong>
+                </article>
+                <article class="project-metric">
+                  <span>项目周期</span>
+                  <strong id="project-detail-dates">--</strong>
+                </article>
+                <article class="project-metric">
+                  <span>剩余时间</span>
+                  <strong id="project-detail-remaining">--</strong>
+                </article>
+                <article class="project-metric">
+                  <span>任务进度</span>
+                  <strong id="project-detail-progress-label">0%</strong>
+                </article>
+              </div>
+
+              <div class="project-progress-track" aria-hidden="true">
+                <span id="project-detail-progress-bar"></span>
+              </div>
+
+              <div class="project-gantt-wrap">
+                <div class="project-subheading">
+                  <div>
+                    <h4>项目甘特图</h4>
+                    <p id="project-detail-task-summary">暂无项目任务</p>
+                  </div>
+                  <div class="gantt-heading-actions">
+                    <div class="gantt-scale-toggle" role="group" aria-label="切换项目甘特图时间维度">
+                      <button
+                        class="gantt-scale-button active"
+                        type="button"
+                        data-project-gantt-scale="day"
+                        aria-pressed="true"
+                      >
+                        天
+                      </button>
+                      <button class="gantt-scale-button" type="button" data-project-gantt-scale="week" aria-pressed="false">
+                        周
+                      </button>
+                      <button class="gantt-scale-button" type="button" data-project-gantt-scale="month" aria-pressed="false">
+                        月
+                      </button>
+                    </div>
+                    <span id="project-gantt-window-label" class="gantt-window-label">--</span>
+                  </div>
+                </div>
+                <div id="project-gantt-empty-state" class="soft-empty">
+                  <p>暂无项目任务</p>
+                </div>
+                <div id="project-gantt-chart" class="gantt-chart" aria-label="项目任务甘特图"></div>
+              </div>
+
+              <div class="project-task-wrap">
+                <div class="project-subheading">
+                  <div>
+                    <h4>项目任务</h4>
+                    <p>按任务推进项目，完成后会进入日期复盘。</p>
+                  </div>
+                </div>
+                <div class="status-bar project-task-status">
+                  <div class="status-pill">
+                    <span class="status-label">总数</span>
+                    <strong id="project-task-total-count">0</strong>
+                  </div>
+                  <div class="status-pill">
+                    <span class="status-label">未完成</span>
+                    <strong id="project-task-pending-count">0</strong>
+                  </div>
+                  <div class="status-pill">
+                    <span class="status-label">已完成</span>
+                    <strong id="project-task-completed-count">0</strong>
+                  </div>
+                </div>
+                <div id="project-task-empty-state" class="soft-empty task-empty-state">
+                  <p>这个项目还没有任务，点击“添加项目任务”开始拆解。</p>
+                </div>
+                <ul id="project-task-list" class="task-list" aria-label="项目任务列表"></ul>
+              </div>
+            </section>
+          </section>
+        </section>
+      </section>
+    </main>
+
+    <div id="goal-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close-modal="goal"></div>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="goal-modal-title">
+        <div class="modal-header">
+          <div>
+            <p class="panel-kicker">Goal Editor</p>
+            <h2 id="goal-modal-title">添加目标</h2>
+          </div>
+          <button id="goal-modal-close" class="icon-button" type="button" aria-label="关闭目标弹窗">✕</button>
+        </div>
+
+        <form id="goal-form" class="modal-form">
+          <input type="hidden" id="goal-id" />
+          <label class="field">
+            <span>目标内容</span>
+            <input
+              id="goal-title-input"
+              type="text"
+              maxlength="120"
+              placeholder="例如：本月完成项目第一阶段"
+              required
+            />
+          </label>
+          <label class="field">
+            <span>目标完成日期</span>
+            <input id="goal-date-input" type="date" required />
+          </label>
+          <div class="modal-actions">
+            <button id="goal-submit-button" class="primary-button" type="submit">添加目标</button>
+            <button id="goal-cancel-button" class="ghost-button" type="button">取消</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div id="project-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close-modal="project"></div>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="project-modal-title">
+        <div class="modal-header">
+          <div>
+            <p class="panel-kicker">Project Editor</p>
+            <h2 id="project-modal-title">添加项目</h2>
+          </div>
+          <button id="project-modal-close" class="icon-button" type="button" aria-label="关闭项目弹窗">✕</button>
+        </div>
+
+        <form id="project-form" class="modal-form">
+          <input type="hidden" id="project-id" />
+          <label class="field">
+            <span>项目名称</span>
+            <input
+              id="project-title-input"
+              type="text"
+              maxlength="120"
+              placeholder="必填，例如：官网改版一期"
+              required
+            />
+          </label>
+          <label class="field">
+            <span>负责人</span>
+            <input id="project-owner-input" type="text" maxlength="60" placeholder="可后续补充" />
+          </label>
+          <label class="field">
+            <span>项目目标</span>
+            <textarea id="project-objective-input" rows="3" maxlength="260" placeholder="例如：完成核心页面设计与上线"></textarea>
+          </label>
+          <div class="form-grid-two">
+            <label class="field">
+              <span>开始日期</span>
+              <input id="project-start-date-input" type="date" />
+            </label>
+            <label class="field">
+              <span>截止日期</span>
+              <input id="project-due-date-input" type="date" />
+            </label>
+          </div>
+          <div class="modal-actions">
+            <button id="project-submit-button" class="primary-button" type="submit">添加项目</button>
+            <button id="project-cancel-button" class="ghost-button" type="button">取消</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <div id="task-modal" class="modal hidden" aria-hidden="true">
+      <div class="modal-backdrop" data-close-modal="task"></div>
+      <section class="modal-card" role="dialog" aria-modal="true" aria-labelledby="task-modal-title">
+        <div class="modal-header">
+          <div>
+            <p class="panel-kicker">Task Editor</p>
+            <h2 id="task-modal-title">添加任务</h2>
+          </div>
+          <button id="task-modal-close" class="icon-button" type="button" aria-label="关闭任务弹窗">✕</button>
+        </div>
+
+        <form id="task-form" class="modal-form">
+          <input type="hidden" id="task-id" />
+          <input type="hidden" id="task-source-type" value="daily" />
+          <input type="hidden" id="task-project-id" />
+          <label class="field">
+            <span>任务内容</span>
+            <input
+              id="task-title-input"
+              type="text"
+              maxlength="120"
+              placeholder="必填，例如：整理周报并发送"
+              required
+            />
+          </label>
+          <label class="field">
+            <span>对接人</span>
+            <input id="task-owner-input" type="text" maxlength="60" placeholder="可后续补充" />
+          </label>
+          <label class="field">
+            <span>完成标准</span>
+            <textarea id="task-criteria-input" rows="3" maxlength="220" placeholder="可后续补充"></textarea>
+          </label>
+          <div class="form-grid-two">
+            <label class="field">
+              <span>开始日期</span>
+              <input id="task-start-date-input" type="date" />
+            </label>
+            <label class="field">
+              <span>截止日期</span>
+              <input id="task-due-date-input" type="date" />
+            </label>
+          </div>
+          <label class="field">
+            <span>当前进度</span>
+            <input id="task-progress-input" type="text" maxlength="120" placeholder="例如：已提交待确认" />
+          </label>
+          <label class="field">
+            <span>任务目录地址</span>
+            <input id="task-directory-input" type="text" maxlength="220" placeholder="仅保存为文本" />
+          </label>
+          <div class="modal-actions">
+            <button id="task-submit-button" class="primary-button" type="submit">添加任务</button>
+            <button id="task-cancel-button" class="ghost-button" type="button">取消</button>
+          </div>
+        </form>
+      </section>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
